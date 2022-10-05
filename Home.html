@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<style>
+body {
+  background: #ADD8E6;
+}
+</style>
+</head>
+<body>
+
+<!-- <div class="content">
+  <h1>Cash Dispenser Machine</h1>
+  <input type="text"/>
+</div> -->
+
+    <!-- Modal Dialog -->
+    <div class="modal-dialog" style="max-width: 50% !important; min-width: 350px">
+        <!-- Modal Content -->
+        <div class="modal-content">
+            <form id="">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4>Cash Dispenser Machine</h4>
+                </div>
+                <!-- Modal Header -->
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="form-check-label"> Select Coins</label>
+                                <br/>
+                                <select multiple class="form-control" id="allCoins" on style="width:100%">
+                                </select>
+                                <span class="text-danger" id="errorCoin"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="form-check-label"> Enter Amount</label>
+                                <input class="form-control" id="amount" style="width:100%" />
+                                <span class="text-danger" id="errorAmount"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+
+                </div>
+                <!-- /. Modal Body -->
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <div class="col-lg-8">
+                        <button type="button" class="btn btn-sm btn-primary" onclick="CalculateMinimumNumberOfCoins()">Calculate Minimum Number Of Coins</button>
+                    </div>
+                </div>
+                <!-- /. Modal Footer -->
+            </form>
+        </div>
+        <!-- /. Modal Content -->
+    </div>
+    <!-- /. Modal Dialog -->
+</div>
+</body>
+</html>
+
+<script>
+    $('#amount').keypress(function (e) {    
+    var charCode = (e.which) ? e.which : event.keyCode    
+    if (String.fromCharCode(charCode).match(/[^0-9]/g))    
+        return false;                        
+    });  
+
+    for(let i =1; i<=100; i++){
+       $("#allCoins").append($("<option></option>").val(i).html(i));
+    }
+
+    $('#allCoins').multiselect({
+        columns: 1,
+        placeholder: 'Select Coins',
+        search: true,
+        maxHeight: 450
+    });
+
+    function CalculateMinimumNumberOfCoins(){
+        $('#errorAmount').html('');
+        $('#errorCoin').html(''); 
+
+        if($("#amount").val().length == 0)
+        {
+           $('#errorAmount').html('Please Enter an Amount'); 
+        }
+        if($("#allCoins").val() == null)
+        {
+           $('#errorCoin').html('Please Select atleast one coin'); 
+        }
+
+        let amount =document.getElementById("amount").value;
+
+        axios.post('http://localhost:5221/api/coin-dispenser', {
+            coins: $('#allCoins').val(),
+            amount: parseInt(amount)
+        })
+        .then(function (response) {
+            $.confirm({
+                    title: 'Successful',
+                    content: "Number of minimum coins: "+response.data,
+                    buttons: {
+                        cancel: {
+                            btnClass: 'btn-success',
+                            text: 'Ok',
+                            action: function () {
+                            }
+                        }
+                    }
+              });
+         })
+        .catch(function (error) {
+            $.confirm({
+                        title: 'Error',
+                        content: error?.response?.data?.message,
+                        buttons: {
+                            cancel: {
+                                btnClass: 'btn-danger',
+                                text: 'Ok',
+                                action: function () {
+                                }
+                            }
+                       }
+                });
+         });
+    }
+    
+</script>

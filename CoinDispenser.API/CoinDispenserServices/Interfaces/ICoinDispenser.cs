@@ -5,7 +5,7 @@ namespace CoinDispenserServices.Interfaces
 {
     public interface ICoinDispenser
     {
-        void GetMinimumCoins(int[] coins, int amount, ISuccessOrErrorActionResultPresenter<int?, ErrorMessageDTO> presenter);
-        int GetMinimumCoins(int[] coins, int amount);
+        void GetMinimumCoinChange(int[] coins, int amount, ISuccessOrErrorActionResultPresenter<int?, Response> presenter);
     }
 }   
+        
