@@ -4,7 +4,6 @@ using CoinDispenserServices.Output;
 
 namespace CoinDispenserServices
 {
-
     public class CoinDispenser : ICoinDispenser
     {
         public void GetMinimumCoinChange(int[] coins, int amount, ISuccessOrErrorActionResultPresenter<int?, Response> presenter)
