@@ -15,3 +15,6 @@
 1. Double click on the Home html file
 2. You can now use the application, you are good to go.
 
+## Example
+Input: coins[] = {25, 10, 5}, amount = 30
+Output: Minimum 2 coins required We can use one coin of 25 and one of 5 
